@@ -5,6 +5,11 @@ Change Log
 UNRELEASED
 ==========
 
+Additions:
+----------
+
+- Add support for rate limiting on Django REST Framework's `Request.data`
+
 v4.1
 ====
 
