@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import View
 
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory
 
 from django_ratelimit.decorators import ratelimit
@@ -160,12 +161,12 @@ class RatelimitTests(TestCase):
         @api_view(['POST'])
         @ratelimit(key='data:foo', rate='1/m', block=False)
         def view(request):
-            return request.limited
+            return Response(request.limited)
 
-        assert not view(rest_rf.post('/', {'foo': 'a'}))
-        assert view(rest_rf.post('/', {'foo': 'a'}))
-        assert not view(rest_rf.post('/', {'foo': 'b'}))
-        assert view(rest_rf.post('/', {'foo': 'b'}))
+        assert not view(rest_rf.post('/', {'foo': 'a'})).data
+        assert view(rest_rf.post('/', {'foo': 'a'})).data
+        assert not view(rest_rf.post('/', {'foo': 'b'})).data
+        assert view(rest_rf.post('/', {'foo': 'b'})).data
 
     def test_key_header(self):
         def _req():
